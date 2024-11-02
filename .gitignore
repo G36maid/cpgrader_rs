@@ -21,3 +21,10 @@ Thumbs.db
 
 # Ignore the build directory
 /example/
+<<<<<<< HEAD
+=======
+
+/status/
+
+/grader/
+>>>>>>> 3be966c (del all)
