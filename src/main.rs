@@ -162,7 +162,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             println!("Grading student at index {}", index);
             grade_student(student, &homework_name,&problem, testcase)?;
         }
-
+        store(&students)?;
         Ok(())
     } else if let Some(matches) = match_result.subcommand_matches("score") {
         if let Some(index) = matches.get_one::<String>("index") {
