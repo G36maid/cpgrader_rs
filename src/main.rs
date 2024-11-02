@@ -36,7 +36,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 Arg::new("index")
                     .short('i')
                     .long("index")
-                    .required(true)
+                    //.required(true)
                     .help("This argument define which person to build")
                     .conflicts_with("id")
             )
@@ -46,7 +46,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     //.short('id')
                     .long("id")
                     .aliases(["id", "ID"])
-                    .required(true)
+                    //.required(true)
                     .help("Or you can use student id")
             )
             .arg(
@@ -71,7 +71,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 Arg::new("index")
                     .short('i')
                     .long("index")
-                    .required(true)
+                    //.required(true)
                     .help("This argument define which person to build")
                     .conflicts_with("id")
             )
@@ -81,7 +81,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     //.short('id')
                     .long("id")
                     .aliases(["id", "ID"])
-                    .required(true)
+                    //.required(true)
                     .help("Or you can use student id")
             )
             .arg(
@@ -162,10 +162,16 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 let score = matches.get_one::<String>("score").unwrap();
                 score_student(student, problem, score)?;
             } else {
-                println!("Student ID not found");
+                println!("Student with ID {} not found", id);
             }
         } else {
-            println!("No valid index or ID provided");
+            println!("Scoring for first ungraded student");
+                let index = students.iter().position(|s| !s.is_graded).unwrap();
+                let student = &mut students[index];
+                let problem = matches.get_one::<String>("problem").unwrap();
+                let score = matches.get_one::<String>("score").unwrap();
+                score_student(student, problem, score)?;
+                println!("Scoring student at index {} at {} with {}", index, problem, score);
         }
         store(&students)?;
         Ok(())
