@@ -27,7 +27,7 @@ pub fn grade_student(student: &mut Student,homework_name: &str ,problem_name: &s
         .unwrap_or(0);
     println!("{}", testcase_name);
     println!("testcase_num: {}", testcase_num);
-    let mut total_score: i32 = 0;
+    let mut total_score: f32 = 0.0;
     for i in 1..=testcase_num { // Assuming there are 10 test cases
         println!("running testcase: {}", i);
         //todo run testcase
@@ -75,7 +75,7 @@ pub fn grade_student(student: &mut Student,homework_name: &str ,problem_name: &s
 
         let mut score = String::new();
         io::stdin().read_line(&mut score)?;
-        let score: i32 = score.trim().parse()?;
+        let score: f32 = score.trim().parse()?;
         total_score += score;
     
     }
