@@ -8,6 +8,7 @@ use crate::Student;
 use serde_json::Value;
 use std::fs::File;
 use std::io::Write;
+use std::collections::HashSet;
 //use csv::Writer;
 
 pub fn load(target_dir: &str) -> Result<Vec<Student>, Box<dyn std::error::Error>> {
@@ -98,24 +99,53 @@ pub fn extract_students(target_dir: &str) -> Result<Vec<Student>, Box<dyn std::e
     Ok(students)
 }
 
+
 pub fn to_csv(students: &Vec<Student>, output_file: &str) -> Result<(), Box<dyn std::error::Error>> {
     let mut wtr = csv::Writer::from_path(output_file)?;
 
+    // Collect all unique homework keys
+    let mut homework_keys: HashSet<String> = HashSet::new();
+    for student in students {
+        for (homework, _) in &student.grades {
+            homework_keys.insert(homework.clone());
+        }
+    }
+
+    // Convert HashSet to Vec and sort it
+    let mut homework_keys: Vec<String> = homework_keys.into_iter().collect();
+    homework_keys.sort();
+
+    // Create the header dynamically
+    let mut header = vec!["Index", "ID", "Name", "Zip File", "Folder Path", "Errors"];
+    header.extend(homework_keys.iter().map(|key| key.as_str()));
+    header.push("Is Graded");
+
     // Write the header
-    wtr.write_record(&["Index", "ID", "Name", "Zip File", "Folder Path", "Errors", "Grades", "Is Graded"])?;
+    wtr.write_record(&header)?;
 
     // Write student data
     for student in students {
-        wtr.write_record(&[
+        let mut record = vec![
             student.index.to_string(),
             student.id.clone(),
             student.name.clone(),
             student.zip_file.clone().unwrap_or_default(),
             student.folder_path.clone(),
             format!("{:?}", student.errors),
-            format!("{:?}", student.grades),
-            student.is_graded.to_string(),
-        ])?;
+        ];
+
+        // Add grades in the order of the header
+        for key in &homework_keys {
+            if let Some(point) = student.grades.get(key) {
+                record.push(point.clone());
+            } else {
+                record.push(String::new());
+            }
+        }
+
+        record.push(student.is_graded.to_string());
+
+        wtr.write_record(&record)?;
     }
 
     wtr.flush()?;
