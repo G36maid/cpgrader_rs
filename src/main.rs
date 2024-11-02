@@ -139,7 +139,29 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         println!("Grading students(in development)");
         let problem = matches.get_one::<String>("problem").unwrap();
         let testcase = matches.get_one::<String>("testcase").unwrap();
-        
+        if let Some(index) = matches.get_one::<String>("index") {
+            let index: usize = index.parse()?;
+            if index < students.len() {
+                let student = &mut students[index];
+                println!("Grading student at index {}", index);
+                grade_student(student, &homework_name,&problem, testcase)?;
+            } else {
+                println!("Index out of bounds");
+            }
+        } else if let Some(id) = matches.get_one::<String>("id") {
+            if let Some(student) = students.iter_mut().find(|s| s.id == *id) {
+                println!("Grading student with ID {}", id);
+                grade_student(student, &homework_name,&problem, testcase)?;
+            } else {
+                println!("Student with ID {} not found", id);
+            }
+        } else {
+            println!("Grading for first ungraded student");
+            let index = students.iter().position(|s| !s.is_graded).unwrap();
+            let student = &mut students[index];
+            println!("Grading student at index {}", index);
+            grade_student(student, &homework_name,&problem, testcase)?;
+        }
 
         Ok(())
     } else if let Some(matches) = match_result.subcommand_matches("score") {

@@ -4,65 +4,90 @@ use crate::unzip_student_file; // Adjust the path if necessary
 use crate::run_make; // Adjust the path if necessary
 //use crate::log_errors; // Adjust the path if necessary
 use std::io;
-use crate::cleanup_student_folder; // Add this line to import the function
-use std::process::Command;
+use std::str;
 use std::io::Write;
+//use colored_diff::diff;
+//use crate::cleanup_student_folder; // Add this line to import the function
+use std::process::Command;
+//use std::io::Write;
 use std::fs;
 
 
-pub fn grade_student(student: &mut Student, homework_name: &str, testcase_name: &str)-> Result<(), Box<dyn std::error::Error>> {
+pub fn grade_student(student: &mut Student,homework_name: &str ,problem_name: &str, testcase_name: &str)-> Result<(), Box<dyn std::error::Error>> {
     // Iterate over all test cases
 
-    let config_content = fs::read_to_string("config.toml")?;
+    let config_content = fs::read_to_string("./config.toml")?;
     let config: toml::Value = toml::from_str(&config_content)?;
-    let testcase_num: i32 = config[testcase_name]["testcase"].as_str().unwrap().parse().unwrap();
-    
-    let mut total_score = 0;
+
+
+    let testcase_num = config
+        .get("testcase03")
+        .and_then(|section| section.get("testcase"))
+        .and_then(|value| value.as_integer())
+        .unwrap_or(0);
+    println!("{}", testcase_name);
+    println!("testcase_num: {}", testcase_num);
+    let mut total_score: i32 = 0;
     for i in 1..=testcase_num { // Assuming there are 10 test cases
         println!("running testcase: {}", i);
+        //todo run testcase
+        //input testcase score
+        
+        // ./grader/studentID/studentID_HW01/hw010X < "./testcase/testcase05/in/${i}.in"
+        let student_output_folder = format!("./grader/{}/{}_{}/out", student.id, student.id , homework_name);
+        
+        let testcase_command = format!("./grader/{}/{}_{}/{} < ./testcase/{}/in/{}.in > {}/{}.out " , student.id, student.id , homework_name, problem_name, testcase_name, i ,  student_output_folder, i);
+        
+        println!("testcase_command: {}", testcase_command);
+        
+        //format!("> {}/{}.out", student_output_folder, i)
+        //println!("student_output_folder: {}", student_output_folder);
+        
+        fs::create_dir_all(&student_output_folder)?;
 
-        // // Construct the command to run the student's homework
-        // let student_id = &student.id;
-        // let hw_path = format!("./grader/{}/{}_HW01/hw010{}", student_id, student_id, i);
-        // let input_path = format!("./testcase/testcase05/in/{}.in", i);
-        // let output_path = format!("./testcase/testcase05/out/{}.out", i);
+        let output = Command::new("sh")
+            .arg("-c")
+            .arg(&testcase_command)
+            //.arg()
+            .output()?;
+        
+        //println!("output: {:?}", output);
 
-        // // Run the student's homework with the input file
-        // let output = Command::new(hw_path)
-        //     .arg("<")
-        //     .arg(&input_path)
-        //     .output()
-        //     .expect("Failed to execute process");
+        if output.status.success() {
+            let stdout = std::str::from_utf8(&output.stdout).unwrap();
+            //println!("Command succeeded with output: {}", stdout);
+            let expected_output = std::fs::read_to_string(format!("./testcase/{}/out/{}.out", testcase_name, i))?;
+            //println!("expected_output: {}", expected_output);
 
-        // // Print the output
-        // println!("{}", String::from_utf8_lossy(&output.stdout));
+            let diff_command = format!("colordiff -s -y -Z -b {}/{}.out ./testcase/{}/out/{}.out", student_output_folder, i, testcase_name, i);
+            println!("diff_command: {}", diff_command);
+            let diff_output = Command::new("sh")
+                .arg("-c")
+                .arg(&diff_command)
+                .spawn()?
+                .wait_with_output()?;
+            io::stdout().write_all(&diff_output.stdout)?;
+        } else {
+            let stderr = std::str::from_utf8(&output.stderr).unwrap();
+            eprintln!("Command failed with error: {}", stderr);
+        }
+        println!("Please enter the score for test case {}:", i);
 
-        // // Prompt for the score
-        // println!("請輸入分數：");
-        // let mut score = String::new();
-        // io::stdin().read_line(&mut score)?;
-        // let score: i32 = score.trim().parse().expect("Invalid score input");
-
-        // // Add the score to the total score
-        // total_score += score;
-        //     Ok(())
-        // }
-    
-        // // Print the total score
-        // println!("總分：{}", total_score);
-    
-        // // Update the student's score
-        // student.grades.insert(homework_name.to_string(), total_score.to_string());
-        // student.is_graded = true;
+        let mut score = String::new();
+        io::stdin().read_line(&mut score)?;
+        let score: i32 = score.trim().parse()?;
+        total_score += score;
     
     }
 
-    // Print the total score
+    //    Print the total score
     println!("total_score：{}", total_score);
 
     // Update the student's score
-    student.grades.insert(homework_name.to_string(), total_score.to_string());
+    student.grades.insert(problem_name.to_string(), total_score.to_string());
     student.is_graded = true;
+    println!("updated student score: {:?}", student.grades);
+    println!("please clean up the student folder by running `cargo run -- clean`");
     Ok(())
 }
 
