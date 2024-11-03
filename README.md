@@ -11,7 +11,7 @@
 - csv    Create CSV of grade
 - help   Print this message or the help of the given subcommand(s)
 
-### Commands
+### toml
 
 ```config.toml
 [global]
