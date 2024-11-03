@@ -5,7 +5,7 @@ dependent = []
 # example: dependent = ["mid03.c", "test.png",]   
 
 [testcase01]
-testcase = 0
+testcase = 10
 
 [testcase02]
 testcase = 0

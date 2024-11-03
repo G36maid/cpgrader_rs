@@ -23,7 +23,7 @@ pub fn grade_student(
     let config: toml::Value = toml::from_str(&config_content)?;
 
     let testcase_num = config
-        .get("testcase03")
+        .get(testcase_name)
         .and_then(|section| section.get("testcase"))
         .and_then(|value| value.as_integer())
         .unwrap_or(0);
