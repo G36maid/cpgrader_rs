@@ -127,7 +127,7 @@ pub fn to_csv(
     // Create the header dynamically
     let mut header = vec!["Index", "ID", "Name", "Zip File", "Folder Path", "Errors"];
     header.extend(homework_keys.iter().map(|key| key.as_str()));
-    header.push("Is Graded");
+    //header.push("Is Graded");
 
     // Write the header
     wtr.write_record(&header)?;
