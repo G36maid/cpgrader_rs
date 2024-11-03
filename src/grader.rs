@@ -78,7 +78,7 @@ pub fn grade_student(
             println!("./testcase/{}/out/{}.out", testcase_name, i);
 
             let diff_command = format!(
-                "colordiff -s -Z -b {}/{}.out ./testcase/{}/out/{}.out",
+                "colordiff -s -u -Z -b {}/{}.out ./testcase/{}/out/{}.out",
                 student_output_folder, i, testcase_name, i
             );
             //println!("diff_command: {}", diff_command);
