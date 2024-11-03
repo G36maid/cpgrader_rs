@@ -1,12 +1,19 @@
+use crate::Student;
 use std::fs::{self, File};
 use std::io::{self, BufReader};
 use std::path::Path;
-use zip::read::ZipArchive;
 use std::process::Command;
-use crate::Student;
+use zip::read::ZipArchive;
 
-pub fn unzip_student_file(student: &Student, output_dir: &str) -> Result<(), Box<dyn std::error::Error>> {
-    let zip_file_path = format!("{}/{}", student.folder_path, student.zip_file.as_ref().unwrap());
+pub fn unzip_student_file(
+    student: &Student,
+    output_dir: &str,
+) -> Result<(), Box<dyn std::error::Error>> {
+    let zip_file_path = format!(
+        "{}/{}",
+        student.folder_path,
+        student.zip_file.as_ref().unwrap()
+    );
     let file = File::open(&zip_file_path)?;
     let mut archive = ZipArchive::new(BufReader::new(file))?;
 

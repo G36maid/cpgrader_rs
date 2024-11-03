@@ -10,8 +10,6 @@ testcase = 0
 
 [testcase03]
 testcase = 20
-command = "./grader/{}/{}_{}/{} < ./testcase/{}/in/{}.in > {}/{}.out " 
-arg=["student.id","student.id", "homework_name", "problem_name", "testcase_name", "i", "student_output_folder", "i"]
 
 [testcase04]
 testcase = 20

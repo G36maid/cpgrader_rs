@@ -1,51 +1,58 @@
 // load.rs
 use std::fs;
 //use std::intrinsics::simd::simd_or;
-use std::path::Path;
-use regex::Regex;
-use std::collections::HashMap;
 use crate::Student;
-use serde_json::Value;
+use regex::Regex;
+//use serde_json::Value;
+use std::collections::HashMap;
+use std::collections::HashSet;
 use std::fs::File;
 use std::io::Write;
-use std::collections::HashSet;
+use std::path::Path;
 //use csv::Writer;
 
 pub fn load(target_dir: &str) -> Result<Vec<Student>, Box<dyn std::error::Error>> {
     let status_file = format!("./status/status.json");
     if Path::new(&status_file).exists() {
-        let file_content = fs::read_to_string(&status_file).map_err(|e| Box::new(e) as Box<dyn std::error::Error>)?;
-        let students: Vec<Student> = serde_json::from_str(&file_content).map_err(|e| Box::new(e) as Box<dyn std::error::Error>)?;
+        let file_content = fs::read_to_string(&status_file)
+            .map_err(|e| Box::new(e) as Box<dyn std::error::Error>)?;
+        let students: Vec<Student> = serde_json::from_str(&file_content)
+            .map_err(|e| Box::new(e) as Box<dyn std::error::Error>)?;
         return Ok(students);
     }
     // 提取學生資料
     let students = extract_students(target_dir)?;
 
     // 序列化學生資料
-    let serialized_students = serde_json::to_string(&students).map_err(|e| Box::new(e) as Box<dyn std::error::Error>)?;
-    
+    let serialized_students =
+        serde_json::to_string(&students).map_err(|e| Box::new(e) as Box<dyn std::error::Error>)?;
 
     //sort students by id
 
     // 將序列化的資料寫入 status 檔案
-    let mut file = File::create(status_file).map_err(|e| Box::new(e) as Box<dyn std::error::Error>)?;
-    file.write_all(serialized_students.as_bytes()).map_err(|e| Box::new(e) as Box<dyn std::error::Error>)?;
+    let mut file =
+        File::create(status_file).map_err(|e| Box::new(e) as Box<dyn std::error::Error>)?;
+    file.write_all(serialized_students.as_bytes())
+        .map_err(|e| Box::new(e) as Box<dyn std::error::Error>)?;
 
     Ok(students)
 }
 pub fn store(students: &Vec<Student>) -> Result<(), Box<dyn std::error::Error>> {
     let status_file = format!("./status/status.json");
-    let serialized_students = serde_json::to_string(students).map_err(|e| Box::new(e) as Box<dyn std::error::Error>)?;
-    let mut file = File::create(status_file).map_err(|e| Box::new(e) as Box<dyn std::error::Error>)?;
-    file.write_all(serialized_students.as_bytes()).map_err(|e| Box::new(e) as Box<dyn std::error::Error>)?;
+    let serialized_students =
+        serde_json::to_string(students).map_err(|e| Box::new(e) as Box<dyn std::error::Error>)?;
+    let mut file =
+        File::create(status_file).map_err(|e| Box::new(e) as Box<dyn std::error::Error>)?;
+    file.write_all(serialized_students.as_bytes())
+        .map_err(|e| Box::new(e) as Box<dyn std::error::Error>)?;
     Ok(())
 }
 
-pub fn extract_students(target_dir: &str) -> Result<Vec<Student>, Box<dyn std::error::Error>> {
+fn extract_students(target_dir: &str) -> Result<Vec<Student>, Box<dyn std::error::Error>> {
     let re = Regex::new(r"(\d{8}[a-zA-Z])\s+(\S+)_\d+_assignsubmission_file_")?;
     let mut students = Vec::new();
     let entries = fs::read_dir(target_dir)?;
-    
+
     for (index, entry) in entries.enumerate() {
         let entry = entry?;
         let path = entry.path();
@@ -84,7 +91,7 @@ pub fn extract_students(target_dir: &str) -> Result<Vec<Student>, Box<dyn std::e
             folder_path: path.to_str().unwrap().to_string(),
             errors: Vec::new(),
             grades: HashMap::new(),
-            is_graded: false,
+            //is_graded: false,
         };
         students.push(student);
     }
@@ -99,8 +106,10 @@ pub fn extract_students(target_dir: &str) -> Result<Vec<Student>, Box<dyn std::e
     Ok(students)
 }
 
-
-pub fn to_csv(students: &Vec<Student>, output_file: &str) -> Result<(), Box<dyn std::error::Error>> {
+pub fn to_csv(
+    students: &Vec<Student>,
+    output_file: &str,
+) -> Result<(), Box<dyn std::error::Error>> {
     let mut wtr = csv::Writer::from_path(output_file)?;
 
     // Collect all unique homework keys
@@ -143,7 +152,7 @@ pub fn to_csv(students: &Vec<Student>, output_file: &str) -> Result<(), Box<dyn 
             }
         }
 
-        record.push(student.is_graded.to_string());
+        //record.push(student.is_graded.to_string());
 
         wtr.write_record(&record)?;
     }

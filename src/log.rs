@@ -1,4 +1,3 @@
-
 // // Import the Student type
 // use crate::student::Student;
 // use std::fs::File;
