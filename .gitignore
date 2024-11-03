@@ -6,6 +6,7 @@
 
 # Ignore Cargo.lock (if you're using a library)
 Cargo.lock
+config.toml
 
 # Ignore the node_modules directory (if using Node.js)
 node_modules/
