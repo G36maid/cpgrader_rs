@@ -89,7 +89,12 @@ pub fn grade_student(
         println!("Please enter the score for test case {}:", i);
 
         let mut score = String::new();
-        io::stdin().read_line(&mut score)?;
+        loop {
+            io::stdin().read_line(&mut score)?;
+            if !score.trim().is_empty() {
+            break;
+            }
+        }
         let score: f32 = score.trim().parse()?;
         total_score += score;
     }
