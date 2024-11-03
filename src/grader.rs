@@ -69,14 +69,7 @@ pub fn grade_student(
         //println!("output: {:?}", output);
 
         if output.status.success() {
-            // let stdout = std::str::from_utf8(&output.stdout).unwrap();
-            // //println!("Command succeeded with output: {}", stdout);
-            // let expected_output =
-            //     std::fs::read_to_string(format!("./testcase/{}/out/{}.out", testcase_name, i))?;
-            // //println!("expected_output: {}", expected_output);
-            println!("{}/{}.out", student_output_folder, i);
-            println!("./testcase/{}/out/{}.out", testcase_name, i);
-
+            
             let diff_command = format!(
                 "colordiff -s -u -Z -b {}/{}.out ./testcase/{}/out/{}.out",
                 student_output_folder, i, testcase_name, i
