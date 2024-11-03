@@ -5,7 +5,62 @@ use std::path::Path;
 use std::process::Command;
 use zip::read::ZipArchive;
 
-pub fn unzip_student_file(
+pub fn build(student: &mut Student, homework_name: &str) -> Result<(), Box<dyn std::error::Error>> {
+    // if student.is_graded {
+    //     println!("學生 {} 已經被評分過。", student.id);
+    //     //return Ok(());
+    // }
+    println!("處理學生：{} - {}", student.index, student.name);
+    if let Some(zip_file) = &student.zip_file {
+        if let Err(e) = unzip_student_file(student, "./grader") {
+            student.errors.push(format!("解壓縮錯誤: {}", e));
+        } else if let Err(e) = dependent(student, homework_name) {
+            student.errors.push(format!("複製檔案錯誤: {}", e));
+        } else if let Err(e) = run_make(student, homework_name) {
+            student.errors.push(format!("make 錯誤: {}", e));
+        }
+    } else {
+        student
+            .errors
+            .push(format!("學生 {} 沒有 zip 檔案。", student.id));
+    }
+    
+    // if !student.errors.is_empty() {
+    //     //log_errors(student)?;
+    // }
+
+    Ok(())
+}
+fn dependent(student: &Student, homework_name: &str) -> Result<bool, Box<dyn std::error::Error>> {
+
+    // 讀取 config.toml
+    let config = std::fs::read_to_string("config.toml")?;
+    let config: toml::Value = toml::from_str(&config)?;
+    let student_output_dir = format!("./grader/{}/{}_{}", student.id, student.id, homework_name);
+    // 從 [global][files] 複製所有檔案到學生資料夾
+
+//     [global]
+//      [dependent]
+
+    //those files are at ./dependent
+
+    //println!("Copying dependent files for student {}", student.id);
+    let files = config["global"]["dependent"].as_array().unwrap();
+    //println!("files: {:?}", files);
+    for file in files {
+        let file = file.as_str().unwrap();
+        let src = format!("./dependent/{}", file);
+        let dest = format!("{}/{}", student_output_dir, file);
+        println!("Copying dependent {} to {}", src, dest);
+        fs::copy(src, dest)?;
+    }
+    
+    Ok(true)
+}
+
+
+
+fn unzip_student_file(
     student: &Student,
     output_dir: &str,
 ) -> Result<(), Box<dyn std::error::Error>> {
@@ -43,7 +98,7 @@ pub fn unzip_student_file(
     Ok(())
 }
 
-pub fn run_make(student: &Student, homework_name: &str) -> Result<(), Box<dyn std::error::Error>> {
+fn run_make(student: &Student, homework_name: &str) -> Result<(), Box<dyn std::error::Error>> {
     let student_output_dir = format!("./grader/{}/{}_{}", student.id, student.id, homework_name);
     let output = Command::new("make")
         .current_dir(&student_output_dir)

@@ -1,6 +1,5 @@
 // grader.rs
-use crate::run_make;
-use crate::unzip_student_file; // Adjust the path if necessary
+ // Adjust the path if necessary
 use crate::Student; // Adjust the path if necessary
                     //use crate::log_errors; // Adjust the path if necessary
 use std::io;
@@ -70,11 +69,11 @@ pub fn grade_student(
         //println!("output: {:?}", output);
 
         if output.status.success() {
-            let stdout = std::str::from_utf8(&output.stdout).unwrap();
-            //println!("Command succeeded with output: {}", stdout);
-            let expected_output =
-                std::fs::read_to_string(format!("./testcase/{}/out/{}.out", testcase_name, i))?;
-            //println!("expected_output: {}", expected_output);
+            // let stdout = std::str::from_utf8(&output.stdout).unwrap();
+            // //println!("Command succeeded with output: {}", stdout);
+            // let expected_output =
+            //     std::fs::read_to_string(format!("./testcase/{}/out/{}.out", testcase_name, i))?;
+            // //println!("expected_output: {}", expected_output);
 
             let diff_command = format!(
                 "colordiff -s -y -Z -b {}/{}.out ./testcase/{}/out/{}.out",
@@ -124,30 +123,6 @@ pub fn grade_student(
     Ok(())
 }
 
-pub fn build(student: &mut Student, homework_name: &str) -> Result<(), Box<dyn std::error::Error>> {
-    // if student.is_graded {
-    //     println!("學生 {} 已經被評分過。", student.id);
-    //     //return Ok(());
-    // }
-    println!("處理學生：{} - {}", student.index, student.name);
-    if let Some(zip_file) = &student.zip_file {
-        if let Err(e) = unzip_student_file(student, "./grader") {
-            student.errors.push(format!("解壓縮錯誤: {}", e));
-        } else if let Err(e) = run_make(student, homework_name) {
-            student.errors.push(format!("make 錯誤: {}", e));
-        }
-    } else {
-        student
-            .errors
-            .push(format!("學生 {} 沒有 zip 檔案。", student.id));
-    }
-
-    // if !student.errors.is_empty() {
-    //     //log_errors(student)?;
-    // }
-
-    Ok(())
-}
 pub fn score_student(
     student: &mut Student,
     problem: &str,

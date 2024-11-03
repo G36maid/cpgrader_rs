@@ -1,6 +1,8 @@
 [global]
-homework = "HW01"
+homework = "MID"
 testcase = 0
+dependent = [] 
+# example: dependent = ["mid03.c", "test.png",]   
 
 [testcase01]
 testcase = 0
