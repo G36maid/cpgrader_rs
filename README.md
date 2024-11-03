@@ -1,55 +1,38 @@
 
 ## Finish
 
-- Unzip
-- Make
-- Log
-- Clean module
-- load
+### Commands
 
-## Todo
-
-- output csv
-
-## bug
-
-- index error
---
+- grade  Automatically grade students by dependcies
+- score  Input students score for one problem
+- build  Clean, unzip, make, copy depends to grader dir
+- clean  Clean the grader dir
+- log    Print the log
+- csv    Create CSV of grade
+- help   Print this message or the help of the given subcommand(s)
 
 ### Commands
 
-- `--score <hw0303> <int>`: 打分
-- `--clean`: Clean
-- `--build`: Clean, unzip, make, log, copy solution
-- `--log`: Log
-- `--exit`
+```config.toml
+[global]
+homework = "MID"
+testcase = 0
+dependent = [] 
+# example: dependent = ["mid03.c", "test.png",]   
 
-### Toml
+[testcase01]
+testcase = 0
 
-- HW0幾
-- 改第幾提
+[testcase02]
+testcase = 0
 
-### Grading
+[testcase03]
+testcase = 20
 
-- `--grade`: 自動批改
-    1. 純輸出 run+diff
-    2. 有測資 固定IO
-        - 有多少筆
-        - `testcase0X` 裏面有 `in/` 跟 `out/`
-            - `in` ...
-            - `out` ...
-    3. 沒有固定IO (other)
-    4. 互動題
-    5. 帶參數 (可選參數)
+[testcase04]
+testcase = 20
 
-### Diff
+[testcase05]
+testcase = 20
 
-- 要如何輸出是個問題
-- 該題總分加總起來為20
-
-### Output
-
-- `--output`: Output a CSV
-- Log to zip
-- If ok, score
-- If error, error message
+```
