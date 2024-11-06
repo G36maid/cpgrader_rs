@@ -107,19 +107,20 @@ fn extract_students(target_dir: &str) -> Result<Vec<Student>, Box<dyn std::error
 }
 
 pub fn to_csv(
-    students: &Vec<Student>,
+    students: &mut Vec<Student>,
     output_file: &str,
 ) -> Result<(), Box<dyn std::error::Error>> {
     let mut wtr = csv::Writer::from_path(output_file)?;
 
     // Collect all unique homework keys
     let mut homework_keys: HashSet<String> = HashSet::new();
-    for student in students {
+    for student in students.iter() {
         for (homework, _) in &student.grades {
             homework_keys.insert(homework.clone());
         }
     }
 
+    
     // Convert HashSet to Vec and sort it
     let mut homework_keys: Vec<String> = homework_keys.into_iter().collect();
     homework_keys.sort();
@@ -129,32 +130,81 @@ pub fn to_csv(
     header.extend(homework_keys.iter().map(|key| key.as_str()));
     //header.push("Is Graded");
 
+    // Define the custom order
+    let custom_order = vec![
+        "41105045E", "41211003E", "41243208S", "41075013H", "41147012S", "41247005S", "41347001S",
+        "41347002S", "41347003S", "41347004S", "41347005S", "41347006S", "41347007S", "41347008S",
+        "41347009S", "41347011S", "41347013S", "41347014S", "41347015S", "41347016S", "41347017S",
+        "41347018S", "41347019S", "41347020S", "41347021S", "41347022S", "41347023S", "41347024S",
+        "41347025S", "41347026S", "41347027S", "41347028S", "41347029S", "41347030S", "41347031S",
+        "41347032S", "41347033S", "41347034S", "41347035S", "41347036S", "41347037S", "41347038S",
+        "41347039S", "41347040S", "41347042S", "41347043S", "41347044S", "41347047S", "41347048S",
+        "41347049S", "41347050S", "41347051S", "41347052S", "41347053S", "41347054S", "41347055S",
+        "41347056S", "41347057S", "41347058S", "41347059S", "41347060S", "41347061S", "41347062S",
+        "41347063S", "41347064S", "41347065S", "41347066S", "41347903S", "41271223H", "41371230H",
+    ];
+
     // Write the header
     wtr.write_record(&header)?;
 
+    // Clone students to avoid borrow of moved value
+    let students_clone = students.clone();
+
     // Write student data
-    for student in students {
-        let mut record = vec![
-            student.index.to_string(),
-            student.id.clone(),
-            student.name.clone(),
-            student.zip_file.clone().unwrap_or_default(),
-            student.folder_path.clone(),
-            format!("{:?}", student.errors),
-        ];
+    // for student in students {
+    //     let mut record = vec![
+    //         student.index.to_string(),
+    //         student.id.clone(),
+    //         student.name.clone(),
+    //         student.zip_file.clone().unwrap_or_default(),
+    //         student.folder_path.clone(),
+    //         format!("{:?}", student.errors),
+    //     ];
 
-        // Add grades in the order of the header
-        for key in &homework_keys {
-            if let Some(point) = student.grades.get(key) {
-                record.push(point.clone());
-            } else {
-                record.push(String::new());
+    //     // Add grades in the order of the header
+    //     for key in &homework_keys {
+    //         if let Some(point) = student.grades.get(key) {
+    //             record.push(point.clone());
+    //         } else {
+    //             record.push(String::new());
+    //         }
+    //     }
+
+    //     //record.push(student.is_graded.to_string());
+
+    //     wtr.write_record(&record)?;
+    // }
+
+    // Write student data according to custom order
+    for id in &custom_order {
+        if let Some(student) = students_clone.iter().find(|s| &s.id == id) {
+            let mut record = vec![
+                student.index.to_string(),
+                student.id.clone(),
+                student.name.clone(),
+                student.zip_file.clone().unwrap_or_default(),
+                student.folder_path.clone(),
+                format!("{:?}", student.errors),
+            ];
+
+            // Add grades in the order of the header
+            for key in &homework_keys {
+                if let Some(point) = student.grades.get(key) {
+                    record.push(point.clone());
+                } else {
+                    record.push(String::new());
+                }
             }
+
+            //record.push(student.is_graded.to_string());
+
+            wtr.write_record(&record)?;
+        } else {
+            // If no matching student, write a line with only the ID
+            let mut record = vec![String::new(); header.len()];
+            record[1] = id.to_string(); // Set the ID field
+            wtr.write_record(&record)?;
         }
-
-        //record.push(student.is_graded.to_string());
-
-        wtr.write_record(&record)?;
     }
 
     wtr.flush()?;

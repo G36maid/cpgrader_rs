@@ -249,7 +249,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         Ok(())
     } else if let Some(matches) = match_result.subcommand_matches("csv") {
         println!("Creating CSV of grade");
-        to_csv(&students, "./grades.csv")?;
+        to_csv(&mut students, "./grades.csv")?;
         Ok(())
     } else {
         Ok(())
