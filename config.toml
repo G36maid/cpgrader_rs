@@ -1,14 +1,14 @@
 [global]
 homework = "MID"
 testcase = 0
-dependent = [] 
+dependent = ["mid03.c",] 
 # example: dependent = ["mid03.c", "test.png",]   
 
 [testcase01]
 testcase = 10
 
 [testcase02]
-testcase = 0
+testcase = 20
 
 [testcase03]
 testcase = 20
