@@ -6,7 +6,14 @@ pub fn cleanup_student_folder() -> Result<(), Box<dyn std::error::Error>> {
     if fs::read_dir(&student_output_dir)?.next().is_none() {
         return Ok(());
     }
-    fs::remove_dir_all(&student_output_dir)?;
-    println!("successfully cleanup student folder");
+    for entry in fs::read_dir(&student_output_dir)? {
+        let entry = entry?;
+        if entry.path().is_dir() {
+            fs::remove_dir_all(entry.path())?;
+        } else {
+            fs::remove_file(entry.path())?;
+        }
+    }
+    println!("successfully cleaned up student folder");
     Ok(())
 }
