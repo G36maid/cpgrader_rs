@@ -22,7 +22,7 @@ pub fn grade_student(
     let config: toml::Value = toml::from_str(&config_content)?;
 
     let testcase_num = config
-        .get("testcase03")
+        .get(testcase_name)
         .and_then(|section| section.get("testcase"))
         .and_then(|value| value.as_integer())
         .unwrap_or(0);
@@ -65,7 +65,7 @@ pub fn grade_student(
             println!("./testcase/{}/out/{}.out", testcase_name, i);
 
             let diff_command = format!(
-                "colordiff -s -u -Z -b {}/{}.out ./testcase/{}/out/{}.out",
+                "colordiff -s -u {}/{}.out ./testcase/{}/out/{}.out",
                 student_output_folder, i, testcase_name, i
             );
             //println!("diff_command: {}", diff_command);
