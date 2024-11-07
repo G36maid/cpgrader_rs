@@ -11,6 +11,13 @@
 - csv    Create CSV of grade
 - help   Print this message or the help of the given subcommand(s)
 
+## docker usage
+
+```
+docker build -t cpgrader-rs:1.0 .
+docker run -it -v $(pwd):/usr/src/myapp cpgrader-rs:1.0
+```
+
 ### toml
 
 ```config.toml
