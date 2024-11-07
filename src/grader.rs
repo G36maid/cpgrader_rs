@@ -10,7 +10,6 @@ use std::str;
 use std::process::Command;
 //use std::io::Write;
 use std::fs;
-
 pub fn grade_student(
     student: &mut Student,
     homework_name: &str,
@@ -53,27 +52,15 @@ pub fn grade_student(
             i
         );
 
-        //println!("testcase_command: {}", testcase_command);
-
-        //format!("> {}/{}.out", student_output_folder, i)
-        //println!("student_output_folder: {}", student_output_folder);
-
         fs::create_dir_all(&student_output_folder)?;
 
         let output = Command::new("sh")
             .arg("-c")
             .arg(&testcase_command)
-            //.arg()
-            .output()?;
-
-        //println!("output: {:?}", output);
+            .output()
+            .expect("Failed to execute command");
 
         if output.status.success() {
-            // let stdout = std::str::from_utf8(&output.stdout).unwrap();
-            // //println!("Command succeeded with output: {}", stdout);
-            // let expected_output =
-            //     std::fs::read_to_string(format!("./testcase/{}/out/{}.out", testcase_name, i))?;
-            // //println!("expected_output: {}", expected_output);
             println!("{}/{}.out", student_output_folder, i);
             println!("./testcase/{}/out/{}.out", testcase_name, i);
 
@@ -92,6 +79,7 @@ pub fn grade_student(
         } else {
             let stderr = std::str::from_utf8(&output.stderr).unwrap();
             eprintln!("Command failed with error: {}", stderr);
+
         }
         println!("Please enter the score for test case {}:", i);
 

@@ -11,7 +11,7 @@ pub fn build(student: &mut Student, homework_name: &str) -> Result<(), Box<dyn s
     //     //return Ok(());
     // }
     println!("處理學生：{} - {}", student.index, student.name);
-    if let Some(zip_file) = &student.zip_file {
+    if let Some(_zip_file) = &student.zip_file {
         if let Err(e) = unzip_student_file(student, "./grader") {
             student.errors.push(format!("解壓縮錯誤: {}", e));
         } else if let Err(e) = dependent(student, homework_name) {

@@ -235,19 +235,19 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         build(student, &homework_name)?;
         store(&students)?;
         Ok(())
-    } else if let Some(matches) = match_result.subcommand_matches("clean") {
+    } else if let Some(_matches) = match_result.subcommand_matches("clean") {
         println!("Cleaning the grader dir");
         cleanup_student_folder()?;
         store(&students)?;
         Ok(())
-    } else if let Some(matches) = match_result.subcommand_matches("log") {
+    } else if let Some(_matches) = match_result.subcommand_matches("log") {
         println!("Printing the log");
         for student in &students {
             println!("{:?}", student);
         }
         store(&students)?;
         Ok(())
-    } else if let Some(matches) = match_result.subcommand_matches("csv") {
+    } else if let Some(_matches) = match_result.subcommand_matches("csv") {
         println!("Creating CSV of grade");
         to_csv(&mut students, "./grades.csv")?;
         Ok(())
