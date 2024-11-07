@@ -6,6 +6,7 @@ RUN apt-get update && apt-get install -y \
     unzip \
     curl \
     tree \
+    colordiff \
     vim \
     tmux \
     bash-completion \
@@ -21,7 +22,7 @@ COPY . .
 
 RUN cargo build --release
 
-RUN cp /usr/src/myapp/target/release/cpgrader-rs /usr/src/myapp/cpgrader-rs
+RUN cp /usr/src/myapp/target/release/cpgrader-rs .
 
 RUN echo "source /etc/profile.d/bash_completion.sh" >> ~/.bashrc
 # 進入 shell
