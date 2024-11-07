@@ -37,14 +37,7 @@ fn dependent(student: &Student, homework_name: &str) -> Result<bool, Box<dyn std
     let config = std::fs::read_to_string("config.toml")?;
     let config: toml::Value = toml::from_str(&config)?;
     let student_output_dir = format!("./grader/{}/{}_{}", student.id, student.id, homework_name);
-    // 從 [global][files] 複製所有檔案到學生資料夾
 
-//     [global]
-//      [dependent]
-
-    //those files are at ./dependent
-
-    //println!("Copying dependent files for student {}", student.id);
     let files = config["global"]["dependent"].as_array().unwrap();
     //println!("files: {:?}", files);
     for file in files {
