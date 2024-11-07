@@ -14,15 +14,12 @@ use std::fs;
 use student::Student;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let target_dir = "./example"; // 替換成你的目標資料夾路徑
+    let target_dir = "./example"; 
     let mut students = load(target_dir)?;
 
     let config_content = fs::read_to_string("config.toml")?;
     let config: toml::Value = toml::from_str(&config_content)?;
     let homework_name = config["global"]["homework"].as_str().unwrap().to_string();
-    // for student in &students {
-    //     println!("{:?}", student);
-    // }
 
     let match_result = command!()
         .subcommand(

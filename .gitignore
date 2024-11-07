@@ -21,6 +21,8 @@ node_modules/
 .DS_Store
 Thumbs.db
 
+
+cpgrader-rs
 # Ignore the build directory
 /example/*
 
