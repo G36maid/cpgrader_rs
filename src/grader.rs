@@ -26,13 +26,17 @@ pub fn grade_student(
         .and_then(|section| section.get("testcase"))
         .and_then(|value| value.as_integer())
         .unwrap_or(0);
+    let diffcommand = config
+        .get(testcase_name)
+        .and_then(|section| section.get("diffcommand"))
+        .and_then(|value| value.as_str())
+        .unwrap_or("colordiff -s -u -B -Z -w");
+
     println!("testcase: {} , num: {}", testcase_name, testcase_num);
     let mut total_score: f32 = 0.0;
     for i in 1..=testcase_num {
         // Assuming there are 10 test cases
         println!("running testcase: {}", i);
-        //todo run testcase
-        //input testcase score
 
         // ./grader/studentID/studentID_HW01/hw010X < "./testcase/testcase05/in/${i}.in"
         let student_output_folder = format!(
@@ -60,13 +64,14 @@ pub fn grade_student(
             .output()
             .expect("Failed to execute command");
 
+
         if output.status.success() {
             println!("{}/{}.out", student_output_folder, i);
             println!("./testcase/{}/out/{}.out", testcase_name, i);
 
             let diff_command = format!(
-                "colordiff -s -u {}/{}.out ./testcase/{}/out/{}.out",
-                student_output_folder, i, testcase_name, i
+                "{} {}/{}.out ./testcase/{}/out/{}.out",
+                diffcommand,student_output_folder, i, testcase_name, i
             );
             //println!("diff_command: {}", diff_command);
             let diff_output = Command::new("sh")
