@@ -14,7 +14,7 @@
 ## docker usage
 
 ```
-docker build -t cpgrader-rs:1.0 .
+docker build --rm -t cpgrader-rs:1.0 .
 docker run -it -v $(pwd):/usr/src/myapp cpgrader-rs:1.0
 ```
 
