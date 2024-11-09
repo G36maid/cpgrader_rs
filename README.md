@@ -2,6 +2,9 @@
 
 ## Finish
 
+sorted csv
+docker
+
 ### Commands
 
 - grade  Automatically grade students by dependcies
@@ -14,12 +17,15 @@
 
 ## docker usage
 
+please copy all the student file into ./example/
+Define a ./comfig.toml before build
+
 ```bash
 docker build --rm -t cpgrader-rs:1.0 .
 docker run -it -v $(pwd)/status:/usr/src/app/status cpgrader-rs:1.0
 ```
 
-### toml
+### toml example
 
 ```config.toml
 [global]
