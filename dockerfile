@@ -16,14 +16,17 @@ RUN apt-get update && apt-get install -y \
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 ENV PATH="/root/.cargo/bin:${PATH}"
 
-WORKDIR /usr/src/myapp
+WORKDIR /usr/src/app
 
-COPY . .
+COPY ./example/ ./example/
+COPY ./src/ ./src/
+COPY ./Cargo.toml ./Cargo.toml
+COPY ./config.toml ./config.toml
+RUN mkdir /usr/src/app/grader
 
 RUN cargo build --release
-
-RUN cp /usr/src/myapp/target/release/cpgrader-rs .
+RUN cp target/release/cpgrader-rs /usr/src/app/
 
 RUN echo "source /etc/profile.d/bash_completion.sh" >> ~/.bashrc
-# 進入 shell
+
 CMD ["/bin/bash"]
