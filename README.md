@@ -1,3 +1,4 @@
+# cpgrader-rs
 
 ## Finish
 
@@ -13,9 +14,9 @@
 
 ## docker usage
 
-```
+```bash
 docker build --rm -t cpgrader-rs:1.0 .
-docker run -it -v $(pwd):/usr/src/myapp cpgrader-rs:1.0
+docker run -it -v $(pwd)/status:/usr/src/app/status cpgrader-rs:1.0
 ```
 
 ### toml
