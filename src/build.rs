@@ -3,11 +3,9 @@ use std::fs::{self, File};
 use std::io::{self, BufReader};
 use std::path::Path;
 use std::process::Command;
-use zip::read::ZipArchive
+use zip::read::ZipArchive;
 
 pub fn build(student: &mut Student, homework_name: &str) -> Result<(), Box<dyn std::error::Error>> {
-<<<<<<< HEAD
-
     println!("Processing student: {} - {}", student.index, student.name);
     if let Some(_zip_file) = &student.zip_file {
         if let Err(e) = unzip_student_file(student, "./grader") {
@@ -16,33 +14,12 @@ pub fn build(student: &mut Student, homework_name: &str) -> Result<(), Box<dyn s
             student.errors.push(format!("File copy error: {}", e));
         } else if let Err(e) = run_make(student, homework_name) {
             student.errors.push(format!("Make error: {}", e));
-=======
-    println!("handaling student：{} - {}", student.index, student.name);
-    if let Some(_zip_file) = &student.zip_file {
-        if let Err(e) = unzip_student_file(student, "./grader") {
-            student.errors.push(format!("unzip error: {}", e));
-        } else if let Err(e) = dependent(student, homework_name) {
-            student.errors.push(format!("copy file error: {}", e));
-        } else if let Err(e) = run_make(student, homework_name) {
-            student.errors.push(format!("make error: {}", e));
->>>>>>> 4e720f0 (style: cargo fmt)
         }
     } else {
         student
             .errors
-<<<<<<< HEAD
             .push(format!("Student {} does not have a zip file.", student.id));
     }
-    
-=======
-            .push(format!("student {} don't provide zip files.", student.id));
-    }
-
-    // if !student.errors.is_empty() {
-    //     //log_errors(student)?;
-    // }
-
->>>>>>> 4e720f0 (style: cargo fmt)
     Ok(())
 }
 fn dependent(student: &Student, homework_name: &str) -> Result<bool, Box<dyn std::error::Error>> {
@@ -54,7 +31,7 @@ fn dependent(student: &Student, homework_name: &str) -> Result<bool, Box<dyn std
     let files = config["global"]["dependent"].as_array().unwrap();
 
     //println!("files: {:?}", files);
-    
+
     for file in files {
         let file = file.as_str().unwrap();
         let src = format!("./dependent/{}", file);
@@ -70,19 +47,18 @@ fn unzip_student_file(
     student: &Student,
     output_dir: &str,
 ) -> Result<(), Box<dyn std::error::Error>> {
-
     let zip_file_path = format!(
         "{}/{}",
         student.folder_path,
         student.zip_file.as_ref().unwrap()
     );
-    
+
     let file = File::open(&zip_file_path)?;
     let mut archive = ZipArchive::new(BufReader::new(file))?;
 
     let student_output_dir = format!("{}/{}", output_dir, student.id);
     fs::create_dir_all(&student_output_dir)?;
-    
+
     for i in 0..archive.len() {
         let mut file = archive.by_index(i)?;
         let outpath = match file.enclosed_name() {
