@@ -1,5 +1,5 @@
 // grader.rs
- // Adjust the path if necessary
+// Adjust the path if necessary
 use crate::Student; // Adjust the path if necessary
                     //use crate::log_errors; // Adjust the path if necessary
 use std::io;
@@ -64,14 +64,13 @@ pub fn grade_student(
             .output()
             .expect("Failed to execute command");
 
-
         if output.status.success() {
             println!("{}/{}.out", student_output_folder, i);
             println!("./testcase/{}/out/{}.out", testcase_name, i);
 
             let diff_command = format!(
                 "{} {}/{}.out ./testcase/{}/out/{}.out",
-                diffcommand,student_output_folder, i, testcase_name, i
+                diffcommand, student_output_folder, i, testcase_name, i
             );
             //println!("diff_command: {}", diff_command);
             let diff_output = Command::new("sh")
@@ -84,7 +83,6 @@ pub fn grade_student(
         } else {
             let stderr = std::str::from_utf8(&output.stderr).unwrap();
             eprintln!("Command failed with error: {}", stderr);
-
         }
         println!("Please enter the score for test case {}:", i);
 
@@ -92,7 +90,7 @@ pub fn grade_student(
         loop {
             io::stdin().read_line(&mut score)?;
             if !score.trim().is_empty() {
-            break;
+                break;
             }
         }
         let score: f32 = score.trim().parse()?;

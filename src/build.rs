@@ -3,9 +3,10 @@ use std::fs::{self, File};
 use std::io::{self, BufReader};
 use std::path::Path;
 use std::process::Command;
-use zip::read::ZipArchive;
+use zip::read::ZipArchive
 
 pub fn build(student: &mut Student, homework_name: &str) -> Result<(), Box<dyn std::error::Error>> {
+<<<<<<< HEAD
 
     println!("Processing student: {} - {}", student.index, student.name);
     if let Some(_zip_file) = &student.zip_file {
@@ -15,17 +16,36 @@ pub fn build(student: &mut Student, homework_name: &str) -> Result<(), Box<dyn s
             student.errors.push(format!("File copy error: {}", e));
         } else if let Err(e) = run_make(student, homework_name) {
             student.errors.push(format!("Make error: {}", e));
+=======
+    println!("handaling student：{} - {}", student.index, student.name);
+    if let Some(_zip_file) = &student.zip_file {
+        if let Err(e) = unzip_student_file(student, "./grader") {
+            student.errors.push(format!("unzip error: {}", e));
+        } else if let Err(e) = dependent(student, homework_name) {
+            student.errors.push(format!("copy file error: {}", e));
+        } else if let Err(e) = run_make(student, homework_name) {
+            student.errors.push(format!("make error: {}", e));
+>>>>>>> 4e720f0 (style: cargo fmt)
         }
     } else {
         student
             .errors
+<<<<<<< HEAD
             .push(format!("Student {} does not have a zip file.", student.id));
     }
     
+=======
+            .push(format!("student {} don't provide zip files.", student.id));
+    }
+
+    // if !student.errors.is_empty() {
+    //     //log_errors(student)?;
+    // }
+
+>>>>>>> 4e720f0 (style: cargo fmt)
     Ok(())
 }
 fn dependent(student: &Student, homework_name: &str) -> Result<bool, Box<dyn std::error::Error>> {
-
     // 讀取 config.toml
     let config = std::fs::read_to_string("config.toml")?;
     let config: toml::Value = toml::from_str(&config)?;
@@ -42,11 +62,9 @@ fn dependent(student: &Student, homework_name: &str) -> Result<bool, Box<dyn std
         println!("Copying dependent {} to {}", src, dest);
         fs::copy(src, dest)?;
     }
-    
+
     Ok(true)
 }
-
-
 
 fn unzip_student_file(
     student: &Student,
