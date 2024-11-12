@@ -14,7 +14,7 @@ use std::fs;
 use student::Student;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let target_dir = "./example"; 
+    let target_dir = "./example";
     let mut students = load(target_dir)?;
 
     let config_content = fs::read_to_string("config.toml")?;
