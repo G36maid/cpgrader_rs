@@ -18,14 +18,15 @@ ENV PATH="/root/.cargo/bin:${PATH}"
 
 WORKDIR /usr/src/app
 
-COPY ./example/ ./example/
 COPY ./src/ ./src/
 COPY ./Cargo.toml ./Cargo.toml
-COPY ./config.toml ./config.toml
-RUN mkdir /usr/src/app/grader
-
 RUN cargo build --release
 RUN cp target/release/cpgrader-rs /usr/src/app/
+
+COPY ./example/ ./example/
+COPY ./testcase/ ./testcase/
+COPY ./config.toml ./config.toml
+RUN mkdir /usr/src/app/grader
 
 RUN echo "source /etc/profile.d/bash_completion.sh" >> ~/.bashrc
 
