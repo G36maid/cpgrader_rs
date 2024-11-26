@@ -26,7 +26,7 @@ WORKDIR /usr/src/app
 
 COPY ./example/ ./example/
 COPY ./testcase/ ./testcase/
-COPY ./config.toml ./config.toml
+RUN if [ -f ./config.toml ]; then cp ./config.toml ./config.toml; fi
 RUN mkdir /usr/src/app/grader
 
 RUN echo "source /etc/profile.d/bash_completion.sh" >> ~/.bashrc
