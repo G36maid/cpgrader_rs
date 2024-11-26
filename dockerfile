@@ -24,9 +24,9 @@ COPY --from=builder /usr/src/app/target/release/cpgrader-rs /usr/src/app/
 
 WORKDIR /usr/src/app
 
-RUN if [ -d ./example ]; then cp -r ./example ./example; fi
-RUN if [ -d ./testcase ]; then cp -r ./testcase ./testcase; fi
-RUN if [ -f ./config.toml ]; then cp ./config.toml ./config.toml; fi
+COPY ./example/ ./example/
+COPY ./testcase/ ./testcase/
+COPY ./config.toml ./config.toml
 RUN mkdir /usr/src/app/grader
 
 RUN echo "source /etc/profile.d/bash_completion.sh" >> ~/.bashrc
