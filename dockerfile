@@ -24,8 +24,8 @@ COPY --from=builder /usr/src/app/target/release/cpgrader-rs /usr/src/app/
 
 WORKDIR /usr/src/app
 
-COPY ./example/ ./example/
-COPY ./testcase/ ./testcase/
+RUN if [ -d ./example ]; then cp -r ./example ./example; fi
+RUN if [ -d ./testcase ]; then cp -r ./testcase ./testcase; fi
 RUN if [ -f ./config.toml ]; then cp ./config.toml ./config.toml; fi
 RUN mkdir /usr/src/app/grader
 
