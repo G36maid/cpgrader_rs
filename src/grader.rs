@@ -30,7 +30,7 @@ pub fn grade_student(
         .get(testcase_name)
         .and_then(|section| section.get("diffcommand"))
         .and_then(|value| value.as_str())
-        .unwrap_or("colordiff -B -Z -w");
+        .unwrap_or("colordiff -s -y -B -Z -w");
 
     println!("testcase: {} , num: {}", testcase_name, testcase_num);
     let mut total_score: f32 = 0.0;
@@ -72,7 +72,7 @@ pub fn grade_student(
                 "{} {}/{}.out ./testcase/{}/out/{}.out",
                 diffcommand, student_output_folder, i, testcase_name, i
             );
-            //println!("diff_command: {}", diff_command);
+            println!("diff_command: {}", diff_command);
             let diff_output = Command::new("sh")
                 .arg("-c")
                 .arg(&diff_command)
