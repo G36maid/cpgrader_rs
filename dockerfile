@@ -18,6 +18,8 @@ RUN apt-get update && apt-get install -y \
     tmux \
     bash-completion \
     htop \
+    make \
+    gcc \
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /usr/src/app/target/release/cpgrader-rs /usr/src/app/
@@ -26,6 +28,7 @@ WORKDIR /usr/src/app
 
 COPY ./example/ ./example/
 COPY ./testcase/ ./testcase/
+COPY ./dependent/ ./dependent/
 COPY ./config.toml ./config.toml
 RUN mkdir /usr/src/app/grader
 
